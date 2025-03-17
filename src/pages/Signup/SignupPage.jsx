@@ -86,8 +86,8 @@ export const SignupPage = () => {
         }
 
         // Password validation
-        if (formData.password.length < 8) {
-            newErrors.password = '비밀번호는 8자 이상이어야 합니다';
+        if (formData.password.length < 6) {
+            newErrors.password = '비밀번호는 6자 이상이어야 합니다';
             isValid = false;
         }
 
@@ -181,7 +181,7 @@ export const SignupPage = () => {
                             value={formData.password}
                             onChange={handleChange}
                             hasError={!!errors.password}
-                            placeholder="8자 이상 입력해주세요"
+                            placeholder="6자 이상 입력해주세요"
                         />
                         {errors.password && (
                             <ErrorMessage>{errors.password}</ErrorMessage>
