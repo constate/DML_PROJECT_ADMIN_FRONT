@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { login } from '../../apis/auth/auth';
+
+import { PrimaryButton } from '../../components/_common/buttons/PrimaryButton';
+import { theme } from '../../styles/theme';
+
 export const LoginPage = () => {
     // Form state
     const [formData, setFormData] = useState({
@@ -57,13 +62,25 @@ export const LoginPage = () => {
     };
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (validateForm()) {
-            // Submit form data
             console.log('Login submitted:', formData);
-            // Here you would typically call an API to authenticate the user
+            try {
+                const responseData = await login({
+                    email: formData.email,
+                    password: formData.password,
+                });
+                console.log('로그인 성공', responseData);
+            } catch (error) {
+                console.log(error);
+                if (error.response?.data?.message) {
+                    alert(`로그인 실패: ${error.response.data.message}`);
+                } else {
+                    alert('로그인 중 오류가 발생했습니다.');
+                }
+            }
         }
     };
 
@@ -119,7 +136,7 @@ export const LoginPage = () => {
                         <ForgotPassword>비밀번호 찾기</ForgotPassword>
                     </UtilityContainer>
 
-                    <SubmitButton type="submit">로그인</SubmitButton>
+                    <PrimaryButton type="submit">로그인</PrimaryButton>
 
                     <RegisterLink>
                         계정이 없으신가요? <LinkText>회원가입</LinkText>
@@ -229,33 +246,11 @@ const CheckboxLabel = styled.label`
 
 const ForgotPassword = styled.span`
     font-size: 14px;
-    color: #3282f6;
+    color: ${({ theme }) => theme.colors.primary};
     cursor: pointer;
 
     &:hover {
         text-decoration: underline;
-    }
-`;
-
-const SubmitButton = styled.button`
-    width: 100%;
-    padding: 14px;
-    background-color: #3282f6;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-        background-color: #2272eb;
-    }
-
-    &:disabled {
-        background-color: #adb5bd;
-        cursor: not-allowed;
     }
 `;
 
@@ -267,7 +262,7 @@ const RegisterLink = styled.div`
 `;
 
 const LinkText = styled.span`
-    color: #3282f6;
+    color: ${({ theme }) => theme.colors.primary};
     cursor: pointer;
 
     &:hover {
