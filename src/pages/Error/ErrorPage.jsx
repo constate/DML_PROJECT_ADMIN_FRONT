@@ -57,7 +57,7 @@ const ContentWrapper = styled.div`
 const ErrorCode = styled.h1`
     font-size: 9rem;
     font-weight: 800;
-    color: #4f46e5;
+    color: #06402b;
     line-height: 1;
     margin: 0;
 `;
@@ -126,22 +126,22 @@ const Button = styled.button`
 `;
 
 const OutlineButton = styled(Button)`
-    border: 1px solid #4f46e5;
+    border: 1px solid #06402b;
     background-color: white;
-    color: #4f46e5;
+    color: #06402b;
 
     &:hover {
-        background-color: #f9fafb;
+        background-color: #e8e9ed;
     }
 `;
 
 const PrimaryButton = styled(Button)`
     border: 1px solid transparent;
-    background-color: #4f46e5;
+    background-color: #06402b;
     color: white;
-
+    text-decoration: none;
     &:hover {
-        background-color: #4338ca;
+        background-color: #0a5f40;
     }
 `;
 

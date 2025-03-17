@@ -278,14 +278,14 @@ const Label = styled.label`
 const Input = styled.input`
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid ${(props) => (props.hasError ? '#f03e3e' : '#dee2e6')};
+    border: 1px solid ${(props) => (props.hasError ? '#e27d60' : '#dee2e6')};
     border-radius: 8px;
     font-size: 16px;
     transition: all 0.2s ease;
 
     &:focus {
         outline: none;
-        border-color: #3282f6;
+        border-color: #0a5f40;
         box-shadow: 0 0 0 3px rgba(50, 130, 246, 0.15);
     }
 
@@ -296,14 +296,14 @@ const Input = styled.input`
 
 const ErrorMessage = styled.p`
     font-size: 13px;
-    color: #f03e3e;
+    color: #e27d60;
     margin-top: 6px;
 `;
 
 const SubmitButton = styled.button`
     width: 100%;
     padding: 14px;
-    background-color: #3282f6;
+    background-color: #06402b;
     color: white;
     border: none;
     border-radius: 8px;
@@ -313,11 +313,11 @@ const SubmitButton = styled.button`
     transition: background-color 0.2s ease;
 
     &:hover {
-        background-color: #2272eb;
+        background-color: #0a5f40;
     }
 
     &:disabled {
-        background-color: #adb5bd;
+        background-color: #b2bec3;
         cursor: not-allowed;
     }
 `;
