@@ -12,7 +12,6 @@ const Button = styled.button`
     font-weight: 600;
     cursor: pointer;
     border: none;
-    margin: 5px;
     transition: all 0.2s ease;
     background-color: #06402b;
     color: white;
