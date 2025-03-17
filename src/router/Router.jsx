@@ -2,7 +2,7 @@
 // import { IframeLayout } from 'components/IframeLayout/IframeLayout';
 // import { SolutionLayout } from 'components/SolutionLayout/SolutionLayout';
 import { PATH } from './routePath';
-import { HomePage, LoginPage, SignupPage } from '../pages';
+import { HomePage, LoginPage, SignupPage, ErrorPage } from '../pages';
 
 import {
     Route,
@@ -12,7 +12,7 @@ import {
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route>
+        <Route errorElement={<ErrorPage />}>
             <Route path={'/'} element={<HomePage />} />
             <Route path={PATH.Home} element={<HomePage />} />
             <Route path={PATH.Login} element={<LoginPage />} />
