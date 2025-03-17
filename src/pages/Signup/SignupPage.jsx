@@ -111,8 +111,6 @@ export const SignupPage = () => {
         e.preventDefault();
 
         if (validateForm()) {
-            // Submit form data
-            console.log('Form submitted:', formData);
             try {
                 const responseData = await signup({
                     username: formData.name,
