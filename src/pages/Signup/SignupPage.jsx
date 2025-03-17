@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { signup } from '../../apis/auth/auth';
 
+import { PrimaryButton } from '../../components/_common/buttons/PrimaryButton';
+
 export const SignupPage = () => {
     // Form state
     const [formData, setFormData] = useState({
@@ -300,24 +302,6 @@ const ErrorMessage = styled.p`
     margin-top: 6px;
 `;
 
-const SubmitButton = styled.button`
+const SubmitButton = styled(PrimaryButton)`
     width: 100%;
-    padding: 14px;
-    background-color: #06402b;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-
-    &:hover {
-        background-color: #0a5f40;
-    }
-
-    &:disabled {
-        background-color: #b2bec3;
-        cursor: not-allowed;
-    }
 `;
