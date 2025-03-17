@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { signup } from '../../apis/auth/auth';
+
 export const SignupPage = () => {
     // Form state
     const [formData, setFormData] = useState({
@@ -105,13 +107,28 @@ export const SignupPage = () => {
     };
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (validateForm()) {
             // Submit form data
             console.log('Form submitted:', formData);
-            // Here you would typically call an API to register the user
+            try {
+                const responseData = await signup({
+                    username: formData.name,
+                    phone: formData.phone,
+                    email: formData.email,
+                    password: formData.password,
+                });
+                console.log('회원가입 성공', responseData);
+            } catch (error) {
+                console.log(error);
+                if (error.response?.data?.message) {
+                    alert(`회원가입 실패: ${error.response.data.message}`);
+                } else {
+                    alert('회원가입 중 오류가 발생했습니다.');
+                }
+            }
         }
     };
 
