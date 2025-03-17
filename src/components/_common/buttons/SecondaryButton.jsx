@@ -6,8 +6,8 @@ export const SecondaryButton = (children) => {
 
 const Button = styled.button`
     width: 100%;
-    padding: 10px 16px;
-    border-radius: 6px;
+    padding: 14px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
