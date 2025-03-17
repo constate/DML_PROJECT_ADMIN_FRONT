@@ -1,9 +1,15 @@
 export const theme = {
     colors: {
-        background: '#f5f5f5',
-        text: '#000000',
-        accent: '#e87461', // 배터리 패널 오렌지색
-        panel: '#e9e9e9', // 패널 배경색
+        primary: '#06402b',
+        primary1: '#0a5f40',
+        primary2: '#0d7a52',
+        primary3: '#032818',
+        accent: '#f2c94c',
+        caution: '#e27d60',
+        neutrality1: '#2d3436',
+        neutrality2: '#636e72',
+        neutrality3: '#b2bec3',
+        neutrality4: '#f1f2f6',
     },
     fontSizes: {
         small: '0.875rem',
