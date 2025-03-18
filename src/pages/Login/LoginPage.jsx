@@ -235,6 +235,7 @@ const RememberMeContainer = styled.div`
 const Checkbox = styled.input`
     margin: 0;
     margin-right: 8px;
+    accent-color: ${({ theme }) => theme.colors.primary};
     cursor: pointer;
 `;
 
