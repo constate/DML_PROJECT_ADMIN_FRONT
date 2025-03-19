@@ -2,30 +2,40 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import useAuthStore from '@stores/authStore';
+
 export const HomePage = () => {
     const navigate = useNavigate();
-    const [isAuthenticated, setIsAuthenticated] = useState(null); // 초기 상태는 null(확인 중)
+    const { accessToken, logout, checkAuth, user } = useAuthStore();
+    // const [isAuthenticated, setIsAuthenticated] = useState(null); // 초기 상태는 null(확인 중)
 
     useEffect(() => {
-        const checkAuth = () => {
-            const accessToken =
-                localStorage.getItem('accessToken') ||
-                sessionStorage.getItem('accessToken');
+        // 토큰이 없거나 유효하지 않으면 로그인 페이지로 리다이렉트
+        if (!checkAuth()) {
+            navigate('/login');
+        }
+    }, [checkAuth, navigate]);
 
-            if (!accessToken) {
-                navigate('/login', { replace: true });
-            } else {
-                setIsAuthenticated(true);
-            }
-        };
+    // useEffect(() => {
+    //     const checkAuth = () => {
+    //         const accessToken =
+    //             localStorage.getItem('accessToken') ||
+    //             sessionStorage.getItem('accessToken');
 
-        checkAuth();
-    }, [navigate]);
+    //         if (!accessToken) {
+    //             navigate('/login', { replace: true });
+    //         } else {
+    //             setIsAuthenticated(true);
+    //         }
+    //     };
+
+    //     checkAuth();
+    // }, [navigate]);
 
     // 인증 확인 중일 때는 아무것도 렌더링하지 않음
-    if (isAuthenticated === null) {
-        return null;
-    }
+    // if (isAuthenticated === null) {
+    //     return null;
+    // }
 
     return (
         <div>

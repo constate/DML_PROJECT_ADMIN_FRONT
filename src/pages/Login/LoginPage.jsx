@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { login } from '../../apis/auth/auth';
+import { login } from '@apis/auth/auth';
+import useAuthStore from '@stores/authStore';
 
 import { PrimaryButton } from '../../components/_common/buttons/PrimaryButton';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
-    // Form state
+    const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
     const [rememberMe, setRememberMe] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
@@ -80,16 +82,17 @@ export const LoginPage = () => {
                 });
                 const { idToken, user } = responseData;
                 if (idToken) {
+                    setAccessToken(idToken, user);
                     // "로그인 상태 유지" 체크 여부에 따라 저장 방식 결정
-                    console.log('rememberMe', rememberMe);
-                    if (rememberMe) {
-                        // localStorage에 토큰 저장 (오래 유지)
-                        localStorage.setItem('accessToken', idToken);
-                        // TokenStorage.setToken(token);
-                    } else {
-                        // 세션 스토리지에 저장 (브라우저 닫으면 삭제)
-                        sessionStorage.setItem('accessToken', idToken);
-                    }
+                    // console.log('rememberMe', rememberMe);
+                    // if (rememberMe) {
+                    //     // localStorage에 토큰 저장 (오래 유지)
+                    //     localStorage.setItem('accessToken', idToken);
+                    //     // TokenStorage.setToken(token);
+                    // } else {
+                    //     // 세션 스토리지에 저장 (브라우저 닫으면 삭제)
+                    //     sessionStorage.setItem('accessToken', idToken);
+                    // }
                     // 필요시 서버와 협력하여 HttpOnly 쿠키 설정을 위한 API 호출도 가능
                     // (백엔드에서 처리해야 합니다)
 
