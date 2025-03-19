@@ -6,7 +6,9 @@ export const HomePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem('accessToken')
+            ? localStorage.getItem('accessToken')
+            : sessionStorage.getItem('accessToken');
 
         // accessToken이 없으면 login 페이지로 리디렉션
         if (!accessToken) {
