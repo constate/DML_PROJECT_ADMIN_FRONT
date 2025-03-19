@@ -3,5 +3,6 @@ export { SalesPage } from './Sales/SalesPage';
 export { CouponPage } from './Coupon/CouponPage';
 export { LoginPage } from './Login/LoginPage.jsx';
 export { SignupPage } from './Signup/SignupPage.jsx';
+export { RealTimeOrderPage } from './RealTimeOrder/RealTimeOrderPage.jsx';
 
 export { ErrorPage } from './Error/ErrorPage.jsx';

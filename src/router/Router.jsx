@@ -2,7 +2,14 @@
 // import { IframeLayout } from 'components/IframeLayout/IframeLayout';
 // import { SolutionLayout } from 'components/SolutionLayout/SolutionLayout';
 import { PATH } from './routePath';
-import { HomePage, LoginPage, SignupPage, ErrorPage } from '../pages';
+// import { HomePage, LoginPage, SignupPage, ErrorPage, RealTimeOrder } from '../pages';
+import {
+    HomePage,
+    LoginPage,
+    SignupPage,
+    ErrorPage,
+    RealTimeOrderPage,
+} from '@pages';
 
 import {
     Route,
@@ -17,6 +24,7 @@ export const router = createBrowserRouter(
             <Route path={PATH.Home} element={<HomePage />} />
             <Route path={PATH.Login} element={<LoginPage />} />
             <Route path={PATH.Signup} element={<SignupPage />} />
+            <Route path={PATH.RealTimeOrder} element={<RealTimeOrderPage />} />
         </Route>,
     ),
 );
