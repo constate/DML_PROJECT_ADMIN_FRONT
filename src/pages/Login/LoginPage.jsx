@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { login } from '../../apis/auth/auth';
 
 import { PrimaryButton } from '../../components/_common/buttons/PrimaryButton';
-import { theme } from '../../styles/theme';
 
 export const LoginPage = () => {
+    const navigate = useNavigate();
     // Form state
+    const [rememberMe, setRememberMe] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -18,7 +20,11 @@ export const LoginPage = () => {
         email: '',
         password: '',
     });
-
+    // rememberMe checkbox
+    const handleCheckboxChange = (e) => {
+        console.log(e.target.checked);
+        setRememberMe(e.target.checked);
+    };
     // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,6 +78,26 @@ export const LoginPage = () => {
                     email: formData.email,
                     password: formData.password,
                 });
+                const { idToken, user } = responseData;
+                if (idToken) {
+                    // "로그인 상태 유지" 체크 여부에 따라 저장 방식 결정
+                    console.log('rememberMe', rememberMe);
+                    if (rememberMe) {
+                        // localStorage에 토큰 저장 (오래 유지)
+                        localStorage.setItem('accessToken', idToken);
+                        // TokenStorage.setToken(token);
+                    } else {
+                        // 세션 스토리지에 저장 (브라우저 닫으면 삭제)
+                        sessionStorage.setItem('accessToken', idToken);
+                    }
+                    // 필요시 서버와 협력하여 HttpOnly 쿠키 설정을 위한 API 호출도 가능
+                    // (백엔드에서 처리해야 합니다)
+
+                    // 로그인 성공 후 메인 페이지 또는 대시보드로 이동
+                    // navigate('/home'); // 또는 원하는 경로
+                } else {
+                    throw new Error();
+                }
                 console.log('로그인 성공', responseData);
             } catch (error) {
                 console.log(error);
@@ -127,7 +153,12 @@ export const LoginPage = () => {
 
                     <UtilityContainer>
                         <RememberMeContainer>
-                            <Checkbox type="checkbox" id="remember" />
+                            <Checkbox
+                                type="checkbox"
+                                id="remember"
+                                checked={rememberMe}
+                                onChange={handleCheckboxChange}
+                            />
                             <CheckboxLabel htmlFor="remember">
                                 로그인 상태 유지
                             </CheckboxLabel>
