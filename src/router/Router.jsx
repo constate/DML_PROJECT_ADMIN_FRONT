@@ -11,6 +11,8 @@ import {
     RealTimeOrderPage,
 } from '@pages';
 
+import { ProtectedRoute } from './ProtectedRoute';
+
 import {
     Route,
     createBrowserRouter,
@@ -20,11 +22,17 @@ import {
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route errorElement={<ErrorPage />}>
-            <Route path={'/'} element={<HomePage />} />
-            <Route path={PATH.Home} element={<HomePage />} />
             <Route path={PATH.Login} element={<LoginPage />} />
             <Route path={PATH.Signup} element={<SignupPage />} />
-            <Route path={PATH.RealTimeOrder} element={<RealTimeOrderPage />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route path={'/'} element={<HomePage />} />
+                <Route path={PATH.Home} element={<HomePage />} />
+                <Route
+                    path={PATH.RealTimeOrder}
+                    element={<RealTimeOrderPage />}
+                />
+            </Route>
         </Route>,
     ),
 );
