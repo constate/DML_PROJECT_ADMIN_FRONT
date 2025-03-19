@@ -1,20 +1,31 @@
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
     const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // 초기 상태는 null(확인 중)
 
     useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken')
-            ? localStorage.getItem('accessToken')
-            : sessionStorage.getItem('accessToken');
+        const checkAuth = () => {
+            const accessToken =
+                localStorage.getItem('accessToken') ||
+                sessionStorage.getItem('accessToken');
 
-        // accessToken이 없으면 login 페이지로 리디렉션
-        if (!accessToken) {
-            navigate('/login', { replace: true });
-        }
-    }, [navigate]); // navigate가 변경되었을 때만 실행
+            if (!accessToken) {
+                navigate('/login', { replace: true });
+            } else {
+                setIsAuthenticated(true);
+            }
+        };
+
+        checkAuth();
+    }, [navigate]);
+
+    // 인증 확인 중일 때는 아무것도 렌더링하지 않음
+    if (isAuthenticated === null) {
+        return null;
+    }
 
     return (
         <div>
