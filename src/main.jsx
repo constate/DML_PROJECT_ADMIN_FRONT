@@ -12,10 +12,11 @@ ChannelService.boot({
     pluginKey: CHANNEL_SERVICE_KEY,
 });
 ChannelService.showChannelButton();
+// ChannelService.hideChannelButton();
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <GlobalStyles />
         <App />
-    </StrictMode>
+    </StrictMode>,
 );
