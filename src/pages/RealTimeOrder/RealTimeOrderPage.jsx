@@ -54,6 +54,50 @@ export const RealTimeOrderPage = () => {
             totalAmount: 15500,
             status: 'pending',
         },
+        {
+            id: 4,
+            tableNumber: 5,
+            orderTime: new Date('2025-03-19T12:40:00'),
+            items: [
+                { name: '녹차라떼', quantity: 2, price: 5000 },
+                { name: '초코케이크', quantity: 1, price: 5500 },
+            ],
+            totalAmount: 15500,
+            status: 'pending',
+        },
+        {
+            id: 4,
+            tableNumber: 5,
+            orderTime: new Date('2025-03-19T12:40:00'),
+            items: [
+                { name: '녹차라떼', quantity: 2, price: 5000 },
+                { name: '초코케이크', quantity: 1, price: 5500 },
+            ],
+            totalAmount: 15500,
+            status: 'pending',
+        },
+        {
+            id: 4,
+            tableNumber: 5,
+            orderTime: new Date('2025-03-19T12:40:00'),
+            items: [
+                { name: '녹차라떼', quantity: 2, price: 5000 },
+                { name: '초코케이크', quantity: 1, price: 5500 },
+            ],
+            totalAmount: 15500,
+            status: 'pending',
+        },
+        {
+            id: 4,
+            tableNumber: 5,
+            orderTime: new Date('2025-03-19T12:40:00'),
+            items: [
+                { name: '녹차라떼', quantity: 2, price: 5000 },
+                { name: '초코케이크', quantity: 1, price: 5500 },
+            ],
+            totalAmount: 15500,
+            status: 'pending',
+        },
     ]);
 
     const handleStatusChange = (orderId, newStatus) => {
@@ -77,7 +121,7 @@ export const RealTimeOrderPage = () => {
     return (
         <Container>
             <Header>
-                <Title>주문 관리</Title>
+                <Title>실시간 주문 현황</Title>
                 <OrderCount>{orders.length}개의 주문</OrderCount>
             </Header>
 
@@ -97,8 +141,7 @@ export const RealTimeOrderPage = () => {
 
 // Styled Components
 const Container = styled.div`
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
     padding: 24px 16px;
     background-color: #f9fafb;
     min-height: 100vh;
@@ -143,5 +186,13 @@ const OrderGrid = styled.div`
 
     @media (min-width: 1200px) {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (min-width: 1600px) {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    @media (min-width: 1920px) {
+        grid-template-columns: repeat(6, 1fr);
     }
 `;
