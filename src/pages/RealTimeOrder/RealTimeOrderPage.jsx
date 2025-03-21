@@ -11,11 +11,12 @@ export const RealTimeOrderPage = () => {
             items: [
                 { name: '아메리카노', quantity: 2, price: 4500 },
                 { name: '카페라떼', quantity: 1, price: 5000 },
-                { name: '치즈케이크', quantity: 1, price: 4500 },
-                { name: '치즈케이크', quantity: 1, price: 4500 },
-                { name: '치즈케이크', quantity: 1, price: 4500 },
-                { name: '치즈케이크', quantity: 1, price: 4500 },
-                { name: '치즈케이크', quantity: 1, price: 4500 },
+                { name: '치즈케이크1', quantity: 1, price: 4500 },
+                { name: '치즈케이크2', quantity: 1, price: 4500 },
+                { name: '치즈케이크3', quantity: 1, price: 4500 },
+                { name: '치즈케이크4', quantity: 1, price: 4500 },
+                { name: '치즈케이크5', quantity: 1, price: 4500 },
+                { name: '치즈케이크6', quantity: 1, price: 4500 },
             ],
             totalAmount: 18500,
             status: 'pending',
@@ -23,14 +24,14 @@ export const RealTimeOrderPage = () => {
         {
             id: 2,
             tableNumber: 7,
-            orderTime: new Date('2025-03-19T12:15:00'),
+            orderTime: new Date('2022-03-19T12:15:00'),
             items: [
                 { name: '카푸치노', quantity: 2, price: 5500 },
                 { name: '바닐라라떼', quantity: 1, price: 5500 },
                 { name: '크로플', quantity: 2, price: 4250 },
             ],
             totalAmount: 25000,
-            status: 'inProgress',
+            status: 'pending',
         },
         {
             id: 3,
@@ -146,46 +147,48 @@ export const RealTimeOrderPage = () => {
 
     return (
         <Container>
-            <Header>
+            <FixedHeader>
                 <Title>실시간 주문 현황</Title>
                 <OrderCountBadge>{activeOrderCount}개의 주문</OrderCountBadge>
-            </Header>
+            </FixedHeader>
 
-            <OrderGrid>
-                {orders.map((order) => (
-                    <RealTimeOrderCard
-                        key={order.id}
-                        order={order}
-                        onStatusChange={handleStatusChange}
-                        onCancel={handleCancel}
-                        onCompleteAnimationEnd={handleCompleteAnimationEnd}
-                    />
-                ))}
-            </OrderGrid>
+            <Content>
+                <OrderGrid>
+                    {orders.map((order) => (
+                        <RealTimeOrderCard
+                            key={order.id}
+                            order={order}
+                            onStatusChange={handleStatusChange}
+                            onCancel={handleCancel}
+                            onCompleteAnimationEnd={handleCompleteAnimationEnd}
+                        />
+                    ))}
+                </OrderGrid>
 
-            {completedOrders.length > 0 && (
-                <CompletedSection>
-                    <CompletedHeader>
-                        <CompletedTitle>완료된 주문</CompletedTitle>
-                        <CompletedCount>
-                            {completedOrders.length}개
-                        </CompletedCount>
-                    </CompletedHeader>
-                    <CompletedList>
-                        {completedOrders.slice(0, 3).map((order) => (
-                            <CompletedItem key={order.id}>
-                                테이블 {order.tableNumber} -{' '}
-                                {order.items.length}개 품목
-                            </CompletedItem>
-                        ))}
-                        {completedOrders.length > 3 && (
-                            <MoreCompletedItems>
-                                외 {completedOrders.length - 3}개 주문 완료
-                            </MoreCompletedItems>
-                        )}
-                    </CompletedList>
-                </CompletedSection>
-            )}
+                {completedOrders.length > 0 && (
+                    <CompletedSection>
+                        <CompletedHeader>
+                            <CompletedTitle>완료된 주문</CompletedTitle>
+                            <CompletedCount>
+                                {completedOrders.length}개
+                            </CompletedCount>
+                        </CompletedHeader>
+                        <CompletedList>
+                            {completedOrders.slice(0, 3).map((order) => (
+                                <CompletedItem key={order.id}>
+                                    테이블 {order.tableNumber} -{' '}
+                                    {order.items.length}개 품목
+                                </CompletedItem>
+                            ))}
+                            {completedOrders.length > 3 && (
+                                <MoreCompletedItems>
+                                    외 {completedOrders.length - 3}개 주문 완료
+                                </MoreCompletedItems>
+                            )}
+                        </CompletedList>
+                    </CompletedSection>
+                )}
+            </Content>
         </Container>
     );
 };
@@ -193,16 +196,26 @@ export const RealTimeOrderPage = () => {
 // 스타일 컴포넌트
 const Container = styled.div`
     width: 100%;
-    padding: 24px 16px;
     background-color: #f9fafb;
     min-height: 100vh;
 `;
 
-const Header = styled.div`
+const FixedHeader = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    padding: 16px 24px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+`;
+
+const Content = styled.div`
+    padding: 84px 16px 24px; // 상단 패딩 증가 (헤더 높이 + 약간의 여백)
 `;
 
 const Title = styled.h1`
