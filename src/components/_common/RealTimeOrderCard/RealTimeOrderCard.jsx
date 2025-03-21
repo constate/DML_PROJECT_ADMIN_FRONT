@@ -1,21 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { DetailModal, ConfirmBottomSheet } from './Modals/ModalComponents';
+import { DetailModal } from './Modals/DetailModal';
+import { ConfirmModal } from './Modals/ConfirmModal';
 
 export const RealTimeOrderCard = ({
     order,
     onStatusChange,
-    onCancel,
     onCompleteAnimationEnd,
 }) => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isConfirmSheetOpen, setIsConfirmSheetOpen] = useState(false);
-    const [confirmAction, setConfirmAction] = useState({
-        type: '',
-        message: '',
-    });
+    const [confirmMessage, setConfirmMessage] = useState('');
     const [animateOut, setAnimateOut] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState('');
     const cardRef = useRef(null);
+
+    // 경과 시간 계산 및 업데이트
+    useEffect(() => {
+        const calculateElapsedTime = () => {
+            const now = new Date();
+            const orderTime = new Date(order.orderTime);
+            const diffInMinutes = Math.floor((now - orderTime) / (1000 * 60));
+
+            if (diffInMinutes < 60) {
+                setElapsedTime(`${diffInMinutes}분 전`);
+            } else {
+                const hours = Math.floor(diffInMinutes / 60);
+                const minutes = diffInMinutes % 60;
+                setElapsedTime(`${hours}시간 ${minutes}분 전`);
+            }
+        };
+
+        calculateElapsedTime();
+        const timer = setInterval(calculateElapsedTime, 60000); // 1분마다 업데이트
+
+        return () => clearInterval(timer);
+    }, [order.orderTime]);
 
     // 완료 상태 변경 감지 및 애니메이션 시작
     useEffect(() => {
@@ -42,46 +62,13 @@ export const RealTimeOrderCard = ({
         return `${hours}:${minutes}`;
     };
 
-    const getStatusText = (status) => {
-        switch (status) {
-            case 'pending':
-                return '접수 대기';
-            case 'inProgress':
-                return '처리 중';
-            case 'completed':
-                return '완료';
-            case 'cancelled':
-                return '취소됨';
-            default:
-                return '상태 미정';
-        }
-    };
-
-    const handleStatusChangeClick = (newStatus) => {
-        setConfirmAction({
-            type: 'status',
-            newStatus,
-            message: `주문을 ${
-                newStatus === 'inProgress' ? '접수' : '완료'
-            }하시겠습니까?`,
-        });
-        setIsConfirmSheetOpen(true);
-    };
-
-    const handleCancelClick = () => {
-        setConfirmAction({
-            type: 'cancel',
-            message: '주문을 취소하시겠습니까?',
-        });
+    const handleCompleteClick = () => {
+        setConfirmMessage('주문을 완료하시겠습니까?');
         setIsConfirmSheetOpen(true);
     };
 
     const handleConfirmAction = () => {
-        if (confirmAction.type === 'status') {
-            onStatusChange(order.id, confirmAction.newStatus);
-        } else if (confirmAction.type === 'cancel') {
-            onCancel(order.id);
-        }
+        onStatusChange(order.id, 'completed');
         setIsConfirmSheetOpen(false);
     };
 
@@ -96,71 +83,56 @@ export const RealTimeOrderCard = ({
                 <CardHeader>
                     <TableInfo>
                         <TableNumber>{order.tableNumber}번 테이블</TableNumber>
-                        <OrderTime>{formatTime(order.orderTime)}</OrderTime>
+                        <OrderTime>
+                            {formatTime(new Date(order.orderTime))}
+                        </OrderTime>
                     </TableInfo>
-                    <StatusBadge status={order.status}>
-                        {getStatusText(order.status)}
-                    </StatusBadge>
+                    <ElapsedTime status={order.status}>
+                        {order.status === 'cancelled'
+                            ? '취소됨'
+                            : order.status === 'completed'
+                            ? '완료'
+                            : elapsedTime}
+                    </ElapsedTime>
                 </CardHeader>
 
-                <CardContent>
+                <ScrollableContent>
                     <ItemList>
-                        {order.items.slice(0, 3).map((item, index) => (
+                        {order.items.map((item, index) => (
                             <Item key={index}>
                                 <ItemName>{item.name}</ItemName>
                                 <ItemQuantity>x{item.quantity}</ItemQuantity>
                             </Item>
                         ))}
-                        {order.items.length > 3 && (
-                            <MoreItems>
-                                외 {order.items.length - 3}개 품목
-                            </MoreItems>
-                        )}
                     </ItemList>
+                </ScrollableContent>
 
+                <FixedBottom>
                     <TotalAmount>
                         <TotalLabel>총액</TotalLabel>
                         <TotalValue>
                             {order.totalAmount.toLocaleString()}원
                         </TotalValue>
                     </TotalAmount>
-                </CardContent>
 
-                <CardFooter>
-                    <ActionButton
-                        variant="secondary"
-                        onClick={() => setIsDetailModalOpen(true)}
-                    >
-                        상세보기
-                    </ActionButton>
-
-                    {order.status === 'pending' && (
+                    <CardFooter>
                         <ActionButton
-                            variant="primary"
-                            onClick={() =>
-                                handleStatusChangeClick('inProgress')
-                            }
+                            variant="secondary"
+                            onClick={() => setIsDetailModalOpen(true)}
                         >
-                            접수하기
+                            상세보기
                         </ActionButton>
-                    )}
 
-                    {order.status === 'inProgress' && (
-                        <ActionButton
-                            variant="primary"
-                            onClick={() => handleStatusChangeClick('completed')}
-                        >
-                            완료하기
-                        </ActionButton>
-                    )}
-
-                    {(order.status === 'pending' ||
-                        order.status === 'inProgress') && (
-                        <CancelButton onClick={handleCancelClick}>
-                            취소
-                        </CancelButton>
-                    )}
-                </CardFooter>
+                        {order.status === 'pending' && (
+                            <ActionButton
+                                variant="primary"
+                                onClick={handleCompleteClick}
+                            >
+                                완료
+                            </ActionButton>
+                        )}
+                    </CardFooter>
+                </FixedBottom>
 
                 {/* 완료 시 표시되는 성공 아이콘 오버레이 */}
                 {order.status === 'completed' && !animateOut && (
@@ -192,16 +164,16 @@ export const RealTimeOrderCard = ({
                 order={order}
             />
 
-            <ConfirmBottomSheet
-                isOpen={isConfirmSheetOpen}
-                onClose={() => setIsConfirmSheetOpen(false)}
-                title="주문 처리 확인"
-                message={confirmAction.message}
-                onConfirm={handleConfirmAction}
-                confirmText={
-                    confirmAction.type === 'cancel' ? '취소하기' : '확인'
-                }
-            />
+            {isConfirmSheetOpen && (
+                <ConfirmModal
+                    isOpen={isConfirmSheetOpen}
+                    onClose={() => setIsConfirmSheetOpen(false)}
+                    title="주문 처리 확인"
+                    message={confirmMessage}
+                    onConfirm={handleConfirmAction}
+                    confirmText="확인"
+                />
+            )}
         </>
     );
 };
@@ -245,9 +217,13 @@ const Card = styled.div`
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 320px; /* 고정 높이 */
+    width: 100%;
+    overflow: hidden;
 
     ${(props) =>
         props.status === 'cancelled' &&
@@ -291,6 +267,7 @@ const CardHeader = styled.div`
     justify-content: space-between;
     align-items: flex-start;
     border-bottom: 1px solid #f2f4f6;
+    min-height: 70px;
 `;
 
 const TableInfo = styled.div`
@@ -311,7 +288,7 @@ const OrderTime = styled.span`
     margin-top: 4px;
 `;
 
-const StatusBadge = styled.div`
+const ElapsedTime = styled.div`
     display: inline-flex;
     padding: 4px 8px;
     border-radius: 16px;
@@ -320,16 +297,6 @@ const StatusBadge = styled.div`
 
     ${(props) => {
         switch (props.status) {
-            case 'pending':
-                return `
-          background-color: #FFF8E1;
-          color: #F59F00;
-        `;
-            case 'inProgress':
-                return `
-          background-color: #E7F5FF;
-          color: #3182F6;
-        `;
             case 'completed':
                 return `
           background-color: #EBFBEE;
@@ -349,15 +316,16 @@ const StatusBadge = styled.div`
     }}
 `;
 
-const CardContent = styled.div`
+const ScrollableContent = styled.div`
     padding: 16px;
+    overflow-y: auto;
+    flex-grow: 1;
 `;
 
 const ItemList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 16px;
 `;
 
 const Item = styled.div`
@@ -376,19 +344,17 @@ const ItemQuantity = styled.span`
     color: #6b7684;
 `;
 
-const MoreItems = styled.div`
-    font-size: 13px;
-    color: #6b7684;
-    margin-top: 4px;
+const FixedBottom = styled.div`
+    border-top: 1px solid #f2f4f6;
+    margin-top: auto;
 `;
 
 const TotalAmount = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 8px;
-    padding-top: 12px;
-    border-top: 1px solid #f2f4f6;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f2f4f6;
 `;
 
 const TotalLabel = styled.span`
@@ -407,8 +373,6 @@ const CardFooter = styled.div`
     padding: 12px 16px;
     display: flex;
     gap: 8px;
-    border-top: 1px solid #f2f4f6;
-    position: relative;
 `;
 
 const ActionButton = styled.button`
@@ -445,18 +409,134 @@ const ActionButton = styled.button`
     }}
 `;
 
-const CancelButton = styled.button`
+// ConfirmBottomSheet 컴포넌트 추가 (원래 Modal 폴더에서 가져오는 것 대신)
+const ConfirmBottomSheet = ({
+    isOpen,
+    onClose,
+    title,
+    message,
+    onConfirm,
+    confirmText,
+}) => {
+    if (!isOpen) return null;
+
+    return (
+        <BottomSheetContainer>
+            <BottomSheetOverlay onClick={onClose} />
+            <BottomSheetContent>
+                <BottomSheetHeader>
+                    <BottomSheetTitle>{title}</BottomSheetTitle>
+                    <CloseButton onClick={onClose}>×</CloseButton>
+                </BottomSheetHeader>
+                <BottomSheetBody>
+                    <Message>{message}</Message>
+                </BottomSheetBody>
+                <BottomSheetFooter>
+                    <CancelBtn onClick={onClose}>취소</CancelBtn>
+                    <ConfirmBtn onClick={onConfirm}>{confirmText}</ConfirmBtn>
+                </BottomSheetFooter>
+            </BottomSheetContent>
+        </BottomSheetContainer>
+    );
+};
+
+const BottomSheetContainer = styled.div`
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+`;
+
+const BottomSheetOverlay = styled.div`
     position: absolute;
-    top: -30px;
-    right: 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const BottomSheetContent = styled.div`
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    background-color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding: 20px;
+    z-index: 1001;
+`;
+
+const BottomSheetHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+`;
+
+const BottomSheetTitle = styled.h3`
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+`;
+
+const CloseButton = styled.button`
     background: none;
     border: none;
-    font-size: 13px;
-    color: #6b7684;
+    font-size: 24px;
     cursor: pointer;
+    color: #6b7684;
+`;
+
+const BottomSheetBody = styled.div`
+    margin-bottom: 24px;
+`;
+
+const Message = styled.p`
+    margin: 0;
+    font-size: 16px;
+    color: #4b5563;
+`;
+
+const BottomSheetFooter = styled.div`
+    display: flex;
+    gap: 8px;
+`;
+
+const CancelBtn = styled.button`
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: white;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
 
     &:hover {
-        color: #fa5252;
-        text-decoration: underline;
+        background-color: #f9fafb;
+    }
+`;
+
+const ConfirmBtn = styled.button`
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #3182f6;
+    color: white;
+    border: none;
+
+    &:hover {
+        background-color: #1c64f2;
     }
 `;
