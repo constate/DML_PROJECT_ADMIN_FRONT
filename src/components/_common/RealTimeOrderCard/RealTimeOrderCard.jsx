@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { DetailModal } from './Modals/DetailModal';
 import { ConfirmModal } from './Modals/ConfirmModal';
+import { PrimaryButton } from '../buttons/PrimaryButton';
 
 export const RealTimeOrderCard = ({
     order,
@@ -366,7 +367,7 @@ const TotalLabel = styled.span`
 const TotalValue = styled.span`
     font-size: 16px;
     font-weight: 700;
-    color: #3182f6;
+    color: #06402b;
 `;
 
 const CardFooter = styled.div`
@@ -387,12 +388,19 @@ const ActionButton = styled.button`
     ${(props) => {
         if (props.variant === 'primary') {
             return `
-        background-color: #3182F6;
+        background-color: #06402b;
         color: white;
         border: none;
         
         &:hover {
-          background-color: #1C64F2;
+          background-color: #0a5f40;
+        }
+        &:active {
+            background-color: #032818;
+        }
+        &:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
         }
       `;
         } else {
@@ -407,136 +415,4 @@ const ActionButton = styled.button`
       `;
         }
     }}
-`;
-
-// ConfirmBottomSheet 컴포넌트 추가 (원래 Modal 폴더에서 가져오는 것 대신)
-const ConfirmBottomSheet = ({
-    isOpen,
-    onClose,
-    title,
-    message,
-    onConfirm,
-    confirmText,
-}) => {
-    if (!isOpen) return null;
-
-    return (
-        <BottomSheetContainer>
-            <BottomSheetOverlay onClick={onClose} />
-            <BottomSheetContent>
-                <BottomSheetHeader>
-                    <BottomSheetTitle>{title}</BottomSheetTitle>
-                    <CloseButton onClick={onClose}>×</CloseButton>
-                </BottomSheetHeader>
-                <BottomSheetBody>
-                    <Message>{message}</Message>
-                </BottomSheetBody>
-                <BottomSheetFooter>
-                    <CancelBtn onClick={onClose}>취소</CancelBtn>
-                    <ConfirmBtn onClick={onConfirm}>{confirmText}</ConfirmBtn>
-                </BottomSheetFooter>
-            </BottomSheetContent>
-        </BottomSheetContainer>
-    );
-};
-
-const BottomSheetContainer = styled.div`
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    height: 100%;
-`;
-
-const BottomSheetOverlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const BottomSheetContent = styled.div`
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    background-color: white;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    padding: 20px;
-    z-index: 1001;
-`;
-
-const BottomSheetHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-`;
-
-const BottomSheetTitle = styled.h3`
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-`;
-
-const CloseButton = styled.button`
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #6b7684;
-`;
-
-const BottomSheetBody = styled.div`
-    margin-bottom: 24px;
-`;
-
-const Message = styled.p`
-    margin: 0;
-    font-size: 16px;
-    color: #4b5563;
-`;
-
-const BottomSheetFooter = styled.div`
-    display: flex;
-    gap: 8px;
-`;
-
-const CancelBtn = styled.button`
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    background-color: white;
-    color: #4b5563;
-    border: 1px solid #e5e7eb;
-
-    &:hover {
-        background-color: #f9fafb;
-    }
-`;
-
-const ConfirmBtn = styled.button`
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    background-color: #3182f6;
-    color: white;
-    border: none;
-
-    &:hover {
-        background-color: #1c64f2;
-    }
 `;
