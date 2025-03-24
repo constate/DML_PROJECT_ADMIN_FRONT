@@ -8,6 +8,8 @@ export const RealTimeOrderCard = ({
     order,
     onStatusChange,
     onCompleteAnimationEnd,
+    onToggleSelect,
+    selected,
 }) => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isConfirmSheetOpen, setIsConfirmSheetOpen] = useState(false);
@@ -73,6 +75,13 @@ export const RealTimeOrderCard = ({
         setIsConfirmSheetOpen(false);
     };
 
+    // 카드 선택 토글 핸들러
+    const handleSelectCard = () => {
+        if (order.status === 'pending') {
+            onToggleSelect(order.id);
+        }
+    };
+
     return (
         <>
             <Card
@@ -80,7 +89,36 @@ export const RealTimeOrderCard = ({
                 status={order.status}
                 animateOut={animateOut}
                 onAnimationEnd={handleAnimationEnd}
+                selected={selected}
+                onClick={handleSelectCard}
             >
+                {/* 선택 체크 마크 표시 */}
+                {selected && (
+                    <SelectIndicator>
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M9 12L11 14L15 10"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            <path
+                                d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                stroke="white"
+                                strokeWidth="2"
+                                fill="#06402b"
+                            />
+                        </svg>
+                    </SelectIndicator>
+                )}
+
                 <CardHeader>
                     <TableInfo>
                         <TableNumber>{order.tableNumber}번 테이블</TableNumber>
@@ -119,7 +157,10 @@ export const RealTimeOrderCard = ({
                     <CardFooter>
                         <ActionButton
                             variant="secondary"
-                            onClick={() => setIsDetailModalOpen(true)}
+                            onClick={(e) => {
+                                e.stopPropagation(); // 버블링 방지
+                                setIsDetailModalOpen(true);
+                            }}
                         >
                             상세보기
                         </ActionButton>
@@ -127,7 +168,10 @@ export const RealTimeOrderCard = ({
                         {order.status === 'pending' && (
                             <ActionButton
                                 variant="primary"
-                                onClick={handleCompleteClick}
+                                onClick={(e) => {
+                                    e.stopPropagation(); // 버블링 방지
+                                    handleCompleteClick();
+                                }}
                             >
                                 완료
                             </ActionButton>
@@ -225,6 +269,14 @@ const Card = styled.div`
     height: 320px; /* 고정 높이 */
     width: 100%;
     overflow: hidden;
+    cursor: ${(props) => (props.status === 'pending' ? 'pointer' : 'default')};
+
+    ${(props) =>
+        props.selected &&
+        `
+        box-shadow: 0 0 0 2px #06402b, 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #F5F9F7;
+    `}
 
     ${(props) =>
         props.status === 'cancelled' &&
@@ -233,8 +285,14 @@ const Card = styled.div`
   `}
 
     &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: ${(props) =>
+            props.status === 'pending' ? 'translateY(-2px)' : 'none'};
+        box-shadow: ${(props) =>
+            props.selected
+                ? '0 0 0 2px #06402b, 0 4px 8px rgba(0, 0, 0, 0.15)'
+                : props.status === 'pending'
+                ? '0 4px 6px rgba(0, 0, 0, 0.1)'
+                : '0 1px 3px rgba(0, 0, 0, 0.1)'};
     }
 
     ${(props) =>
@@ -243,6 +301,14 @@ const Card = styled.div`
             animation: ${fadeOutAndSlideUp} 0.7s ease-in-out forwards;
             pointer-events: none;
         `}
+`;
+
+// 선택 표시기
+const SelectIndicator = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
 `;
 
 const CompletedOverlay = styled.div`
