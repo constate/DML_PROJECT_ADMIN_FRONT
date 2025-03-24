@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { RealTimeOrderCard } from '../../components/_common/RealTimeOrderCard/RealTimeOrderCard';
+import { ConfirmModal } from '../../components/_common/RealTimeOrderCard/Modals/ConfirmModal';
 
 export const RealTimeOrderPage = () => {
     const [orders, setOrders] = useState([
@@ -20,6 +21,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 18500,
             status: 'pending',
+            selected: false,
         },
         {
             id: 2,
@@ -32,6 +34,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 25000,
             status: 'pending',
+            selected: false,
         },
         {
             id: 3,
@@ -43,6 +46,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 12000,
             status: 'completed',
+            selected: false,
         },
         {
             id: 4,
@@ -54,6 +58,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 15500,
             status: 'pending',
+            selected: false,
         },
         {
             id: 5,
@@ -65,6 +70,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 15500,
             status: 'pending',
+            selected: false,
         },
         {
             id: 6,
@@ -76,6 +82,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 15500,
             status: 'pending',
+            selected: false,
         },
         {
             id: 7,
@@ -87,6 +94,7 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 15500,
             status: 'pending',
+            selected: false,
         },
         {
             id: 8,
@@ -98,11 +106,14 @@ export const RealTimeOrderPage = () => {
             ],
             totalAmount: 15500,
             status: 'pending',
+            selected: false,
         },
     ]);
 
     // 완료된 주문들을 담을 상태 (애니메이션 완료 후 보관용)
     const [completedOrders, setCompletedOrders] = useState([]);
+    // 일괄 처리 확인 모달
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const handleStatusChange = (orderId, newStatus) => {
         setOrders((prevOrders) =>
@@ -140,6 +151,39 @@ export const RealTimeOrderPage = () => {
         });
     };
 
+    // 카드 선택 토글 핸들러
+    const handleToggleSelect = (orderId) => {
+        setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+                order.id === orderId && order.status === 'pending'
+                    ? { ...order, selected: !order.selected }
+                    : order,
+            ),
+        );
+    };
+
+    // 선택한 모든 주문 완료 처리
+    const handleCompleteSelected = () => {
+        setIsConfirmModalOpen(true);
+    };
+
+    // 선택한 주문들을 완료 상태로 변경
+    const handleConfirmCompletion = () => {
+        setOrders((prevOrders) =>
+            prevOrders.map((order) =>
+                order.selected && order.status === 'pending'
+                    ? { ...order, status: 'completed', selected: false }
+                    : order,
+            ),
+        );
+        setIsConfirmModalOpen(false);
+    };
+
+    // 선택된 주문 카운트
+    const selectedOrderCount = orders.filter(
+        (order) => order.selected && order.status === 'pending',
+    ).length;
+
     // 현재 주문 카운트 (취소된 주문은 제외)
     const activeOrderCount = orders.filter(
         (order) => order.status !== 'cancelled',
@@ -161,6 +205,8 @@ export const RealTimeOrderPage = () => {
                             onStatusChange={handleStatusChange}
                             onCancel={handleCancel}
                             onCompleteAnimationEnd={handleCompleteAnimationEnd}
+                            onToggleSelect={handleToggleSelect}
+                            selected={order.selected}
                         />
                     ))}
                 </OrderGrid>
@@ -189,9 +235,69 @@ export const RealTimeOrderPage = () => {
                     </CompletedSection>
                 )}
             </Content>
+
+            {/* 선택된 주문이 있을 때만 표시되는 하단 팝오버 */}
+            {selectedOrderCount > 0 && (
+                <SelectionPopover>
+                    <PopoverContent>
+                        <SelectedCount>
+                            <OrderCheckIcon>
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M9 12L11 14L15 10"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                    <path
+                                        d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    />
+                                </svg>
+                            </OrderCheckIcon>
+                            <span>{selectedOrderCount}개 선택됨</span>
+                        </SelectedCount>
+                        <CompleteAllButton onClick={handleCompleteSelected}>
+                            모두 완료
+                        </CompleteAllButton>
+                    </PopoverContent>
+                </SelectionPopover>
+            )}
+
+            {/* 일괄 완료 확인 모달 */}
+            {isConfirmModalOpen && (
+                <ConfirmModal
+                    isOpen={isConfirmModalOpen}
+                    onClose={() => setIsConfirmModalOpen(false)}
+                    title="주문 일괄 완료"
+                    message={`선택한 ${selectedOrderCount}개의 주문을 모두 완료하시겠습니까?`}
+                    onConfirm={handleConfirmCompletion}
+                    confirmText="모두 완료"
+                />
+            )}
         </Container>
     );
 };
+
+// 애니메이션 키프레임
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -216,6 +322,7 @@ const FixedHeader = styled.div`
 
 const Content = styled.div`
     padding: 84px 16px 24px; // 상단 패딩 증가 (헤더 높이 + 약간의 여백)
+    padding-bottom: 80px; // 하단 팝오버를 위한 여백 추가
 `;
 
 const Title = styled.h1`
@@ -311,4 +418,62 @@ const MoreCompletedItems = styled.div`
     color: #6b7684;
     margin-top: 8px;
     text-align: center;
+`;
+
+// 하단 팝오버 관련 스타일
+const SelectionPopover = styled.div`
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    width: 90%;
+    max-width: 480px;
+    animation: ${fadeIn} 0.3s ease-out;
+`;
+
+const PopoverContent = styled.div`
+    background-color: #06402b;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+`;
+
+const SelectedCount = styled.div`
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    gap: 8px;
+`;
+
+const OrderCheckIcon = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+`;
+
+const CompleteAllButton = styled.button`
+    background-color: white;
+    color: #06402b;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: #f2f4f6;
+    }
+
+    &:active {
+        background-color: #e5e7eb;
+    }
 `;
