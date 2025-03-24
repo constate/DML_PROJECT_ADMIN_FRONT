@@ -291,11 +291,11 @@ export const RealTimeOrderPage = () => {
 const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translate(-50%, 20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(-50%, 0);
   }
 `;
 
@@ -425,7 +425,7 @@ const SelectionPopover = styled.div`
     position: fixed;
     bottom: 16px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); // 이미 초기 상태에서 적용
     z-index: 999;
     width: 90%;
     max-width: 480px;
