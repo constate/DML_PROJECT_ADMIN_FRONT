@@ -3,4 +3,5 @@ export const PATH = {
     Login: '/login',
     Signup: '/signup',
     RealTimeOrder: '/realtimeorder',
+    Global: '/global',
 };

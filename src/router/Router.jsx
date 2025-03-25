@@ -9,6 +9,7 @@ import {
     SignupPage,
     ErrorPage,
     RealTimeOrderPage,
+    GlobalPage,
 } from '@pages';
 
 import { ProtectedRoute } from './ProtectedRoute';
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
         <Route errorElement={<ErrorPage />}>
             <Route path={PATH.Login} element={<LoginPage />} />
             <Route path={PATH.Signup} element={<SignupPage />} />
+            <Route path={PATH.Global} element={<GlobalPage />} />
 
             <Route element={<ProtectedRoute />}>
                 <Route path={'/'} element={<HomePage />} />
