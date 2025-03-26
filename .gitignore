@@ -13,6 +13,13 @@ dist-ssr
 *.local
 .env
 
+
+# 번역 다운로드 본
+assets
+
+#credentials
+credentials
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
