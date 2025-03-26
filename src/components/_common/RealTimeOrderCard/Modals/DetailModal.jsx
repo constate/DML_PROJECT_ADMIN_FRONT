@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled, { css, keyframes } from 'styled-components';
 
 // 상세보기 모달 컴포넌트
 export const DetailModal = ({ isOpen, onClose, order }) => {
+    const { t } = useTranslation();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -42,7 +44,11 @@ export const DetailModal = ({ isOpen, onClose, order }) => {
             >
                 <ModalHeader>
                     <TableInfo>
-                        <TableNumber>{order.tableNumber}번 테이블</TableNumber>
+                        <TableNumber>
+                            {t('{number}번 테이블', {
+                                number: order.tableNumber,
+                            })}
+                        </TableNumber>
                         <OrderTime>{formatTime(order.orderTime)}</OrderTime>
                     </TableInfo>
                     <CloseButton onClick={onClose}>
@@ -66,21 +72,22 @@ export const DetailModal = ({ isOpen, onClose, order }) => {
 
                 <ModalContent>
                     <Section>
-                        <SectionTitle>주문 내역</SectionTitle>
+                        <SectionTitle>{t('주문 내역')}</SectionTitle>
                         <ItemList>
                             {order.items.map((item, index) => (
                                 <Item key={index}>
                                     <ItemInfo>
                                         <ItemName>{item.name}</ItemName>
                                         <ItemQuantity>
-                                            수량 {item.quantity}개
+                                            {t('수량 {count}개', {
+                                                count: item.quantity,
+                                            })}
                                         </ItemQuantity>
                                     </ItemInfo>
                                     <ItemPrice>
-                                        {(
-                                            item.price * item.quantity
-                                        ).toLocaleString()}
-                                        원
+                                        {t('{price}원', {
+                                            price: item.price * item.quantity,
+                                        })}
                                     </ItemPrice>
                                 </Item>
                             ))}
@@ -91,27 +98,29 @@ export const DetailModal = ({ isOpen, onClose, order }) => {
 
                     <Section>
                         <TotalAmountRow>
-                            <TotalLabel>총 금액</TotalLabel>
+                            <TotalLabel>{t('총 금액')}</TotalLabel>
                             <TotalAmount>
-                                {calculateTotal().toLocaleString()}원
+                                {t('{price}원', {
+                                    price: calculateTotal(),
+                                })}
                             </TotalAmount>
                         </TotalAmountRow>
                     </Section>
 
                     <StatusSection>
-                        <SectionTitle>주문 상태</SectionTitle>
+                        <SectionTitle>{t('주문 상태')}</SectionTitle>
                         <StatusBadge status={order.status}>
-                            {order.status === 'pending' && '접수 대기'}
-                            {order.status === 'inProgress' && '처리 중'}
-                            {order.status === 'completed' && '완료'}
-                            {order.status === 'cancelled' && '취소됨'}
+                            {order.status === 'pending' && t('접수 대기')}
+                            {order.status === 'inProgress' && t('처리 중')}
+                            {order.status === 'completed' && t('완료')}
+                            {order.status === 'cancelled' && t('취소됨')}
                         </StatusBadge>
                     </StatusSection>
                 </ModalContent>
 
                 <ModalFooter>
                     <ActionButton variant="secondary" onClick={onClose}>
-                        닫기
+                        {t('닫기')}
                     </ActionButton>
                     <ActionButton
                         variant="primary"
@@ -121,7 +130,9 @@ export const DetailModal = ({ isOpen, onClose, order }) => {
                         }
                         onClick={() => console.log('주문 처리 액션')}
                     >
-                        {order.status === 'pending' ? '주문 접수' : '완료 처리'}
+                        {order.status === 'pending'
+                            ? t('주문 접수')
+                            : t('완료 처리')}
                     </ActionButton>
                 </ModalFooter>
             </DetailModalContainer>
