@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled, { css, keyframes } from 'styled-components';
 import { DetailModal } from './Modals/DetailModal';
 import { ConfirmModal } from './Modals/ConfirmModal';
@@ -11,6 +12,7 @@ export const RealTimeOrderCard = ({
     onToggleSelect,
     selected,
 }) => {
+    const { t } = useTranslation();
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isConfirmSheetOpen, setIsConfirmSheetOpen] = useState(false);
     const [confirmMessage, setConfirmMessage] = useState('');
@@ -26,11 +28,18 @@ export const RealTimeOrderCard = ({
             const diffInMinutes = Math.floor((now - orderTime) / (1000 * 60));
 
             if (diffInMinutes < 60) {
-                setElapsedTime(`${diffInMinutes}분 전`);
+                setElapsedTime(t('{minute}분 전', { minute: diffInMinutes }));
+                // setElapsedTime(`${diffInMinutes}분 전`);
             } else {
                 const hours = Math.floor(diffInMinutes / 60);
                 const minutes = diffInMinutes % 60;
-                setElapsedTime(`${hours}시간 ${minutes}분 전`);
+                setElapsedTime(
+                    t('{hours}시간 {minutes}분 전', {
+                        hours,
+                        minutes,
+                    }),
+                );
+                // setElapsedTime(`${hours}시간 ${minutes}분 전`);
             }
         };
 
@@ -66,7 +75,7 @@ export const RealTimeOrderCard = ({
     };
 
     const handleCompleteClick = () => {
-        setConfirmMessage('주문을 완료하시겠습니까?');
+        setConfirmMessage(t('주문을 완료하시겠습니까?'));
         setIsConfirmSheetOpen(true);
     };
 
@@ -121,16 +130,21 @@ export const RealTimeOrderCard = ({
 
                 <CardHeader>
                     <TableInfo>
-                        <TableNumber>{order.tableNumber}번 테이블</TableNumber>
+                        <TableNumber>
+                            {t('{number}번 테이블', {
+                                number: order.tableNumber,
+                            })}
+                        </TableNumber>
+                        {/* <TableNumber>{order.tableNumber}번 테이블</TableNumber> */}
                         <OrderTime>
                             {formatTime(new Date(order.orderTime))}
                         </OrderTime>
                     </TableInfo>
                     <ElapsedTime status={order.status}>
                         {order.status === 'cancelled'
-                            ? '취소됨'
+                            ? t('취소됨')
                             : order.status === 'completed'
-                            ? '완료'
+                            ? t('완료')
                             : elapsedTime}
                     </ElapsedTime>
                 </CardHeader>
@@ -148,9 +162,12 @@ export const RealTimeOrderCard = ({
 
                 <FixedBottom>
                     <TotalAmount>
-                        <TotalLabel>총액</TotalLabel>
+                        <TotalLabel>{t('총액')}</TotalLabel>
                         <TotalValue>
-                            {order.totalAmount.toLocaleString()}원
+                            {t('{price}원', {
+                                price: order.totalAmount.toLocaleString(),
+                            })}
+                            {/* {order.totalAmount.toLocaleString()}원 */}
                         </TotalValue>
                     </TotalAmount>
 
@@ -162,7 +179,7 @@ export const RealTimeOrderCard = ({
                                 setIsDetailModalOpen(true);
                             }}
                         >
-                            상세보기
+                            {t('상세보기')}
                         </ActionButton>
 
                         {order.status === 'pending' && (
@@ -173,7 +190,7 @@ export const RealTimeOrderCard = ({
                                     handleCompleteClick();
                                 }}
                             >
-                                완료
+                                {t('완료')}
                             </ActionButton>
                         )}
                     </CardFooter>
@@ -213,10 +230,10 @@ export const RealTimeOrderCard = ({
                 <ConfirmModal
                     isOpen={isConfirmSheetOpen}
                     onClose={() => setIsConfirmSheetOpen(false)}
-                    title="주문 처리 확인"
+                    title={t('주문 처리 확인')}
                     message={confirmMessage}
                     onConfirm={handleConfirmAction}
-                    confirmText="확인"
+                    confirmText={t('확인')}
                 />
             )}
         </>

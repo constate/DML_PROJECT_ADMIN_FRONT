@@ -86,7 +86,9 @@ export const DetailModal = ({ isOpen, onClose, order }) => {
                                     </ItemInfo>
                                     <ItemPrice>
                                         {t('{price}원', {
-                                            price: item.price * item.quantity,
+                                            price: (
+                                                item.price * item.quantity
+                                            ).toLocaleString(),
                                         })}
                                     </ItemPrice>
                                 </Item>
@@ -101,7 +103,7 @@ export const DetailModal = ({ isOpen, onClose, order }) => {
                             <TotalLabel>{t('총 금액')}</TotalLabel>
                             <TotalAmount>
                                 {t('{price}원', {
-                                    price: calculateTotal(),
+                                    price: calculateTotal().toLocaleString(),
                                 })}
                             </TotalAmount>
                         </TotalAmountRow>

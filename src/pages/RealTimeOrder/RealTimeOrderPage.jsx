@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import { useTranslation } from 'react-i18next';
 import { RealTimeOrderCard } from '../../components/_common/RealTimeOrderCard/RealTimeOrderCard';
 import { ConfirmModal } from '../../components/_common/RealTimeOrderCard/Modals/ConfirmModal';
 
 export const RealTimeOrderPage = () => {
+    const { t } = useTranslation();
     const [orders, setOrders] = useState([
         {
             id: 1,
@@ -192,8 +194,10 @@ export const RealTimeOrderPage = () => {
     return (
         <Container>
             <FixedHeader>
-                <Title>실시간 주문 현황</Title>
-                <OrderCountBadge>{activeOrderCount}개의 주문</OrderCountBadge>
+                <Title>{t('실시간 주문 현황')}</Title>
+                <OrderCountBadge>
+                    {t('{count}개의 주문', { count: activeOrderCount })}
+                </OrderCountBadge>
             </FixedHeader>
 
             <Content>
@@ -214,21 +218,27 @@ export const RealTimeOrderPage = () => {
                 {completedOrders.length > 0 && (
                     <CompletedSection>
                         <CompletedHeader>
-                            <CompletedTitle>완료된 주문</CompletedTitle>
+                            <CompletedTitle>{t('완료된 주문')}</CompletedTitle>
                             <CompletedCount>
-                                {completedOrders.length}개
+                                {t('{count}개', {
+                                    count: completedOrders.length,
+                                })}
                             </CompletedCount>
                         </CompletedHeader>
                         <CompletedList>
                             {completedOrders.slice(0, 3).map((order) => (
                                 <CompletedItem key={order.id}>
-                                    테이블 {order.tableNumber} -{' '}
-                                    {order.items.length}개 품목
+                                    {t('테이블')} {order.tableNumber} -{' '}
+                                    {t('{count}개 품목', {
+                                        count: order.items.length,
+                                    })}
                                 </CompletedItem>
                             ))}
                             {completedOrders.length > 3 && (
                                 <MoreCompletedItems>
-                                    외 {completedOrders.length - 3}개 주문 완료
+                                    {t('외 {count}개 주문 완료', {
+                                        count: completedOrders.length - 3,
+                                    })}
                                 </MoreCompletedItems>
                             )}
                         </CompletedList>
@@ -263,10 +273,14 @@ export const RealTimeOrderPage = () => {
                                     />
                                 </svg>
                             </OrderCheckIcon>
-                            <span>{selectedOrderCount}개 선택됨</span>
+                            <span>
+                                {t('{count}개 선택됨', {
+                                    count: selectedOrderCount,
+                                })}
+                            </span>
                         </SelectedCount>
                         <CompleteAllButton onClick={handleCompleteSelected}>
-                            모두 완료
+                            {t('모두 완료')}
                         </CompleteAllButton>
                     </PopoverContent>
                 </SelectionPopover>
@@ -277,10 +291,13 @@ export const RealTimeOrderPage = () => {
                 <ConfirmModal
                     isOpen={isConfirmModalOpen}
                     onClose={() => setIsConfirmModalOpen(false)}
-                    title="주문 일괄 완료"
-                    message={`선택한 ${selectedOrderCount}개의 주문을 모두 완료하시겠습니까?`}
+                    title={t('주문 일괄 완료')}
+                    message={t(
+                        '선택한 {count}개의 주문을 모두 완료하시겠습니까?',
+                        { count: selectedOrderCount },
+                    )}
                     onConfirm={handleConfirmCompletion}
-                    confirmText="모두 완료"
+                    confirmText={t('모두 완료')}
                 />
             )}
         </Container>
