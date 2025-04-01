@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { signup } from '../../apis/auth/auth';
@@ -6,6 +7,7 @@ import { signup } from '../../apis/auth/auth';
 import { PrimaryButton } from '../../components/_common/buttons/PrimaryButton';
 
 export const SignupPage = () => {
+    const navigate = useNavigate();
     // Form state
     const [formData, setFormData] = useState({
         name: '',
@@ -120,6 +122,7 @@ export const SignupPage = () => {
                     email: formData.email,
                     password: formData.password,
                 });
+                navigate('/login');
                 console.log('회원가입 성공', responseData);
             } catch (error) {
                 console.log(error);
