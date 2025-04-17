@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { postProduct } from '../../apis/product/product';
 
 export const CreateProductPage = () => {
     const [groupId, setGroupId] = useState('');
@@ -27,13 +28,13 @@ export const CreateProductPage = () => {
 
         try {
             setLoading(true);
-            const response = await axios.post('/products', {
+            const data = await postProduct({
                 groupId,
                 name,
                 categoryIds,
             });
             setSuccess(true);
-            setMessage(`✅ 생성 성공! Product ID: ${response.data.productId}`);
+            setMessage(`✅ 생성 성공! Product ID: ${data.productId}`);
             setGroupId('');
             setName('');
             setCategoryInput('');
