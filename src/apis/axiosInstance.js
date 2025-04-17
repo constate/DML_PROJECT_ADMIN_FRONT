@@ -24,10 +24,18 @@ const addRefreshSubscriber = (callback) => {
 // 요청 인터셉터 (Access Token 추가)
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('access_token'); // Access Token 사용
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        try {
+            const authData = localStorage.getItem('auth-storage');
+            const parsed = JSON.parse(authData);
+            const accessToken = parsed?.state?.accessToken;
+
+            if (accessToken) {
+                config.headers.Authorization = `Bearer ${accessToken}`;
+            }
+        } catch (err) {
+            console.warn('AccessToken 파싱 실패:', err);
         }
+
         return config;
     },
     (error) => Promise.reject(error),
@@ -59,7 +67,7 @@ axiosInstance.interceptors.response.use(
                     { withCredentials: true }, // HTTP Only 쿠키 전송
                 );
 
-                localStorage.setItem('access_token', data.accessToken);
+                localStorage.setItem('accessToken', data.accessToken);
                 axiosInstance.defaults.headers.Authorization = `Bearer ${data.accessToken}`;
                 onTokenRefreshed(data.accessToken);
 
