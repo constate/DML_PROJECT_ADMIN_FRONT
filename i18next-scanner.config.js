@@ -1,4 +1,4 @@
-const path = require('path');
+import path from 'path';
 
 const COMMON_EXTENSIONS = '/**/*.{js,jsx,ts,tsx,vue,html}';
 
