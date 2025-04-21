@@ -102,6 +102,7 @@ export const LoginPage = () => {
                     throw new Error();
                 }
                 console.log('로그인 성공', responseData);
+                navigate('/home');
             } catch (error) {
                 console.log(error);
                 if (error.response?.data?.message) {
