@@ -8,11 +8,12 @@
         "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "scan:i18n": "i18next-scanner --config i18next-scanner.config.js",
-        "upload:i18n": "npm run scan:i18n && node src/translate/upload.js",
-        "download:i18n": "node src/translate/download.js"
+        "scan:i18n": "i18next-scanner --config i18next-scanner.config.cjs",
+        "upload:i18n": "npm run scan:i18n && node translate/upload.js",
+        "download:i18n": "node translate/download.js"
     },
     "dependencies": {
+        "@babel/parser": "^7.27.0",
         "axios": "^1.8.2",
         "i18next": "^24.2.3",
         "mkdirp": "^0.5.5",
