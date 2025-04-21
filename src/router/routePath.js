@@ -4,4 +4,6 @@ export const PATH = {
     Signup: '/signup',
     RealTimeOrder: '/realtimeorder',
     Global: '/global',
+    CreateProdcut: '/create-product',
+    CreateGroup: '/create-group',
 };
