@@ -10,6 +10,8 @@ import {
     ErrorPage,
     RealTimeOrderPage,
     GlobalPage,
+    CreateProductPage,
+    CreateGroupPage,
 } from '@pages';
 
 import { ProtectedRoute } from './ProtectedRoute';
@@ -30,6 +32,11 @@ export const router = createBrowserRouter(
             <Route element={<ProtectedRoute />}>
                 <Route path={'/'} element={<HomePage />} />
                 <Route path={PATH.Home} element={<HomePage />} />
+                <Route
+                    path={PATH.CreateProdcut}
+                    element={<CreateProductPage />}
+                />
+                <Route path={PATH.CreateGroup} element={<CreateGroupPage />} />
                 <Route
                     path={PATH.RealTimeOrder}
                     element={<RealTimeOrderPage />}
